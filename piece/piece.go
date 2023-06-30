@@ -1,7 +1,7 @@
 package piece
 
 import (
-    "strings"
+	"strings"
 )
 
 type PieceType string
@@ -18,6 +18,12 @@ const (
     WHITE Color = "white"
     BLACK Color = "black"
 )
+func (c *Color) Opposite() Color {
+    if *c == WHITE {
+        return BLACK
+    }
+    return WHITE
+}
 type Position struct {
     X uint
     Y uint
@@ -28,12 +34,11 @@ type Piece struct {
     Position Position
 }
 
-func (p *Piece) MoveTo(x uint, y uint) {
-    if x > 7 || y > 7 {
+func (p *Piece) MoveTo(position Position) {
+    if position.X > 7 || position.Y > 7 {
         panic("Invalid position")
     }
-    p.Position.X = x
-    p.Position.Y = y
+    p.Position = position
 }
 func (p *Piece) Letter() string {
     letter := ""
@@ -73,4 +78,16 @@ func LetterToPiece(letter string, position Position) Piece {
         color = BLACK
     }
     return Piece{pieceType, color, position}
+}
+func LetterToColumn(letter string) uint {
+    letters := "abcdefgh"
+    for i := 0; i < len(letters); i++ {
+        if letter == string(letters[i]) {
+            return uint(i)
+        }
+    }
+    panic("Invalid letter")
+}
+func NumberToRow(number uint) uint {
+    return 8 - number
 }

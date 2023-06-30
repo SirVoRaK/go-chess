@@ -44,6 +44,15 @@ func (b *Board) PieceAt(x uint, y uint) *piece.Piece {
     }
     return nil
 }
+func (b *Board) MovePiece(from piece.Position, to piece.Position) {
+    for i, p := range b.Pieces {
+        if p.Position.X == from.X && p.Position.Y == from.Y {
+            b.Pieces[i].MoveTo(to)
+            return
+        }
+    }
+    panic("No piece at position")
+}
 
 func PrintLine(size uint) {
     fmt.Print("+")
