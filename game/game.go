@@ -49,7 +49,7 @@ func (g *Game) gameLoop() {
 func (g *Game) playTurn() {
     defer func() {
         if r := recover(); r != nil {
-            fmt.Println("Invalid move")
+            fmt.Printf("Invalid move: %s\n", r)
             g.playTurn()
             g.Board.Print()
         }

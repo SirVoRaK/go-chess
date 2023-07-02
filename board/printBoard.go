@@ -23,7 +23,7 @@ func (b *Board) Print() {
     PrintLine(lineLength)
     for row := uint(0); row < 8; row++ {
         for col := uint(0); col < 8; col++ {
-            currentPiece := b.PieceAt(col, row)
+            currentPiece, _ := b.PieceAt(col, row)
             letter := " "
             if currentPiece != nil {
                 letter = strings.ToUpper(currentPiece.Letter())
