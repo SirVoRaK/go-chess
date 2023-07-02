@@ -43,15 +43,15 @@ func BoardFromFen(fen string) Board {
         x = 0
     }
     if len(segments) == 1 {
-        board.Turn = piece.WHITE
+        board.turn = piece.WHITE
         return board
     }
 
     turn := string(segments[1])
     if turn == "w" {
-        board.Turn = piece.WHITE
+        board.turn = piece.WHITE
     } else if turn == "b" {
-        board.Turn = piece.BLACK
+        board.turn = piece.BLACK
     } else {
         panic(fmt.Sprintf("Invalid turn color - %s", turn))
     }

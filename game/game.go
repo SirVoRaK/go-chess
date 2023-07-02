@@ -29,7 +29,7 @@ func NewGame() *Game {
     }()
     game := new(Game)
     game.Board = board.InitialPositionBoard()
-    game.Turn = piece.WHITE
+    game.Turn = game.Board.GetTurn()
     game.Board.Print()
     return game
 }
@@ -51,12 +51,14 @@ func (g *Game) playTurn() {
         if r := recover(); r != nil {
             fmt.Println("Invalid move")
             g.playTurn()
+            g.Board.Print()
         }
     }()
 
     from, to := inputMove()
     g.Board.MovePiece(from, to)
     g.Turn = g.Turn.Opposite()
+    g.Board.ChangeTurn()
 }
 
 func inputMove() (piece.Position, piece.Position) {

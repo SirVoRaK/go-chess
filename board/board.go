@@ -12,28 +12,37 @@ type Castling struct {
 }
 type Board struct {
     Pieces []piece.Piece
-    Turn piece.Color
+    turn piece.Color
     Castling Castling
 }
 func (b *Board) fillDefaults() {
     b.Castling = Castling{true, true, true, true}
 }
+func (b *Board) GetTurn() piece.Color {
+    return b.turn
+}
+func (b *Board) ChangeTurn() {
+    b.turn = b.turn.Opposite()
+}
 func (b *Board) PieceAt(x uint, y uint) *piece.Piece {
-    for _, p := range b.Pieces {
+    for i, p := range b.Pieces {
         if p.Position.X == x && p.Position.Y == y {
-            return &p
+            return &b.Pieces[i]
         }
     }
     return nil
 }
 func (b *Board) MovePiece(from piece.Position, to piece.Position) {
-    for i, p := range b.Pieces {
-        if p.Position.X == from.X && p.Position.Y == from.Y {
-            b.Pieces[i].MoveTo(to)
-            return
-        }
+    fromPiece := b.PieceAt(from.X, from.Y)
+    if fromPiece == nil {
+        panic("No piece at position")
     }
-    panic("No piece at position")
+
+    if fromPiece.Color != b.turn {
+        panic("Not your turn")
+    }
+
+    fromPiece.Move(to)
 }
 
 func InitialPositionBoard() Board {

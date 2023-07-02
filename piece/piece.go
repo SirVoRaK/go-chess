@@ -34,11 +34,12 @@ type Piece struct {
     Position Position
 }
 
-func (p *Piece) MoveTo(position Position) {
+func (p *Piece) Move(position Position) {
     if position.X > 7 || position.Y > 7 {
         panic("Invalid position")
     }
-    p.Position = position
+    p.Position.X = position.X
+    p.Position.Y = position.Y
 }
 func (p *Piece) Letter() string {
     letter := ""
