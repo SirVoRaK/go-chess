@@ -3,6 +3,7 @@ package game
 import (
 	"board"
 	"fmt"
+	"os"
 	"piece"
 	"strconv"
 )
@@ -20,6 +21,12 @@ type Game struct {
 }
 
 func NewGame() *Game {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println(r)
+            os.Exit(1)
+        }
+    }()
     game := new(Game)
     game.Board = board.InitialPositionBoard()
     game.Turn = piece.WHITE
