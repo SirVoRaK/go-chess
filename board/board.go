@@ -5,65 +5,65 @@ import (
 )
 
 type Castling struct {
-    WhiteKingSide bool
-    WhiteQueenSide bool
-    BlackKingSide bool
-    BlackQueenSide bool
+	WhiteKingSide  bool
+	WhiteQueenSide bool
+	BlackKingSide  bool
+	BlackQueenSide bool
 }
 type Board struct {
-    Pieces []piece.Piece
-    turn piece.Color
-    Castling Castling
+	Pieces   [8][8]*piece.Piece
+	turn     piece.Color
+	Castling Castling
 }
+
 func (b *Board) fillDefaults() {
-    b.Castling = Castling{true, true, true, true}
+	b.Castling = Castling{true, true, true, true}
 }
 func (b *Board) GetTurn() piece.Color {
-    return b.turn
+	return b.turn
 }
 func (b *Board) ChangeTurn() {
-    b.turn = b.turn.Opposite()
+	b.turn = b.turn.Opposite()
 }
-func (b *Board) PieceAt(x uint, y uint) (*piece.Piece, int) {
-    for i, p := range b.Pieces {
-        if p.Position.X == x && p.Position.Y == y {
-            return &b.Pieces[i], i
-        }
-    }
-    return nil, -1
+func (b *Board) PieceAt(x uint, y uint) *piece.Piece {
+	if x > 7 || y > 7 {
+		return nil
+	}
+
+	return b.Pieces[y][x]
 }
 func (b *Board) MovePiece(from piece.Position, to piece.Position) {
-    if from == to {
-        panic("Can't move to the same position")
-    }
+	if from == to {
+		panic("Can't move to the same position")
+	}
 
-    fromPiece, _ := b.PieceAt(from.X, from.Y)
-    if fromPiece == nil {
-        panic("No piece at position")
-    }
+	fromPiece := b.PieceAt(from.X, from.Y)
+	if fromPiece == nil {
+		panic("No piece at position")
+	}
 
-    if fromPiece.Color != b.turn {
-        panic("Not your turn")
-    }
+	if fromPiece.Color != b.turn {
+		panic("Not your turn")
+	}
 
-    toPiece, toIndex := b.PieceAt(to.X, to.Y)
-    if toPiece != nil {
-        if toPiece.Color == b.turn {
-            panic("Can't capture your own piece")
-        }
+	toPiece := b.PieceAt(to.X, to.Y)
+	if toPiece != nil {
+		if toPiece.Color == b.turn {
+			panic("Can't capture your own piece")
+		}
 
-        b.removePiece(uint(toIndex))
-    }
+		b.removePiece(to.X, to.Y)
+	}
 
-
-    fromPiece.Move(to)
+	fromPiece.Move(to)
+	b.Pieces[to.Y][to.X] = fromPiece
+	b.Pieces[from.Y][from.X] = nil
 }
-func (b *Board) removePiece(i uint) {
-    b.Pieces[i] = b.Pieces[len(b.Pieces)-1]
-    b.Pieces = b.Pieces[:len(b.Pieces)-1]
+func (b *Board) removePiece(x uint, y uint) {
+	b.Pieces[y][x] = nil
 }
 
 func InitialPositionBoard() Board {
-    initialFen := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    return BoardFromFen(initialFen)
+	initialFen := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+	return BoardFromFen(initialFen)
 }
