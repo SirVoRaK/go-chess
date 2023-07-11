@@ -87,3 +87,54 @@ func BoardFromFen(fen string) Board {
 
 	return board
 }
+
+func (board *Board) ToFen() string {
+	fen := ""
+	for _, row := range board.Pieces {
+		empty := 0
+		for _, piece := range row {
+			if piece == nil {
+				empty++
+				continue
+			}
+			if empty > 0 {
+				fen += strconv.Itoa(empty)
+				empty = 0
+			}
+			fen += piece.Letter()
+		}
+		if empty > 0 {
+			fen += strconv.Itoa(empty)
+		}
+		fen += "/"
+	}
+	fen = fen[:len(fen)-1]
+
+	fen += " "
+	if board.turn == piece.WHITE {
+		fen += "w"
+	} else {
+		fen += "b"
+	}
+
+	fen += " "
+	castling := ""
+	if board.Castling.WhiteKingSide {
+		castling += "K"
+	}
+	if board.Castling.WhiteQueenSide {
+		castling += "Q"
+	}
+	if board.Castling.BlackKingSide {
+		castling += "k"
+	}
+	if board.Castling.BlackQueenSide {
+		castling += "q"
+	}
+	if castling == "" {
+		castling = "-"
+	}
+	fen += castling
+
+	return fen
+}

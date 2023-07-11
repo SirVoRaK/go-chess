@@ -49,6 +49,7 @@ func (b *Board) Print() {
 		fmt.Printf(" %s %c%s ", ColorBlue, letters[i], ColorReset)
 	}
 	fmt.Print("\n")
+	fmt.Println("FEN:", b.ToFen())
 }
 
 func PrintLine(size uint) {
