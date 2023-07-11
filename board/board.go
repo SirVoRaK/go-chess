@@ -1,7 +1,6 @@
 package board
 
 import (
-	"fmt"
 	"piece"
 )
 
@@ -52,20 +51,26 @@ func (b *Board) MovePiece(from piece.Position, to piece.Position) {
 		panic("Can't capture your own piece")
 	}
 
+	legalMoves := fromPiece.LegalMoves(b.Pieces)
+	if !canMoveTo(to, legalMoves) {
+		panic("Illegal move")
+	}
+
 	fromPiece.Move(to)
 	b.Pieces[to.Y][to.X] = fromPiece
 	b.removePiece(from.X, from.Y)
 }
-func (b *Board) removePiece(x uint, y uint) {
-	b.Pieces[y][x] = nil
+func canMoveTo(position piece.Position, legalMoves []piece.Position) bool {
+	for _, legalMove := range legalMoves {
+		if position == legalMove {
+			return true
+		}
+	}
+	return false
 }
 
-func IndexToNotation(x uint, y uint) string {
-	if x > 7 || y > 7 {
-		return ""
-	}
-	letters := "abcdefgh"
-	return string(letters[x]) + fmt.Sprint(8-y)
+func (b *Board) removePiece(x uint, y uint) {
+	b.Pieces[y][x] = nil
 }
 
 func InitialPositionBoard() Board {
