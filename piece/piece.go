@@ -57,25 +57,14 @@ func (p *Piece) Letter() string {
 	return letter
 }
 
-// func getLegalMoves(piece *Piece, board *Board) []Position {
-// }
+var lettersToPieces = map[string]PieceType{
+	"p": PAWN, "n": KNIGHT, "b": BISHOP, "r": ROOK, "q": QUEEN, "k": KING,
+}
 
 func LetterToPiece(letter string, position Position) Piece {
 	lowerLetter := strings.ToLower(letter)
-	pieceType := PAWN
-	if lowerLetter == "n" {
-		pieceType = KNIGHT
-	} else if lowerLetter == "b" {
-		pieceType = BISHOP
-	} else if lowerLetter == "r" {
-		pieceType = ROOK
-	} else if lowerLetter == "q" {
-		pieceType = QUEEN
-	} else if lowerLetter == "k" {
-		pieceType = KING
-	} else if lowerLetter == "p" {
-		pieceType = PAWN
-	} else {
+	pieceType, ok := lettersToPieces[lowerLetter]
+	if !ok {
 		panic("Invalid piece letter")
 	}
 	color := WHITE
@@ -84,6 +73,7 @@ func LetterToPiece(letter string, position Position) Piece {
 	}
 	return Piece{pieceType, color, position}
 }
+
 func LetterToColumn(letter string) uint {
 	letters := "abcdefgh"
 	for i := 0; i < len(letters); i++ {
